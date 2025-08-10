@@ -1,0 +1,2479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Netflix Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+            line-height: 1.4;
+        }
+
+        /* Netflix Title Splash Screen */
+        .netflix-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .netflix-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 40%, rgba(229, 9, 20, 0.1) 50%, transparent 60%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .netflix-logo {
+            width: 400px;
+            height: auto;
+            opacity: 0;
+            transform: scale(0.5);
+            animation: netflixFadeIn 1.5s forwards ease-out;
+            filter: drop-shadow(0 0 20px rgba(229, 9, 20, 0.5));
+            z-index: 2;
+            position: relative;
+        }
+
+        @keyframes netflixFadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) rotateY(-30deg);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1) rotateY(0deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate.netflix-logo {
+            animation: netflixZoomOut 3s forwards ease-in-out;
+        }
+
+        @keyframes netflixZoomOut {
+            0%, 60% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+                filter: blur(10px);
+            }
+        }
+
+        /* Browse Page */
+        .browse-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+            padding: 2rem;
+            position: relative;
+        }
+
+        .browse-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(229, 9, 20, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(229, 9, 20, 0.05) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        .browse-container > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .who-is-watching {
+            color: #ffffff;
+            font-size: 3.5vw;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 4rem;
+            letter-spacing: 0.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .profiles {
+            display: flex;
+            gap: 3.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 4rem;
+            padding: 0 2rem;
+        }        /* Profile Cards */
+        .profile-card {
+            position: relative;
+            margin: 5px;
+            cursor: pointer;
+            height: 11vw;
+            max-height: 200px;
+            max-width: 200px;
+            min-height: 100px;
+            min-width: 100px;
+            width: 11vw;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-origin: center;
+            will-change: transform;
+            z-index: 1;
+            /* Prevent hover glitches */
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            perspective: 1000px;
+            -webkit-perspective: 1000px;
+        }
+
+        .profile-card:hover {
+            transform: scale(1.08);
+            z-index: 10;
+        }
+
+        .profile-card:hover .image-container {
+            border-color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            transition-delay: 0.1s;
+        }
+
+        .profile-card:hover .profile-name {
+            color: #ffffff;
+            transform: translateY(-2px);
+            transition-delay: 0.1s;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 3px solid transparent;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            will-change: border-color, box-shadow;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-name {
+            color: #999999;
+            display: block;
+            font-size: 1.4vw;
+            line-height: 1.2em;
+            margin: 0.8em 0;
+            text-align: center;
+            font-weight: 400;
+            text-transform: capitalize;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            letter-spacing: 0.5px;
+            will-change: color, transform;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: none;
+        }
+
+        .main-layout.active {
+            display: block;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #ffffff;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.7) 10%, transparent 100%);
+            padding: 15px 4%;
+            z-index: 1000;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-left, .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-logo img {
+            height: 28px;
+            margin-right: 40px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-logo img:hover {
+            transform: scale(1.1);
+        }
+
+        .navbar-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .navbar-links li a {
+            color: #e5e5e5;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            padding: 8px 0;
+        }
+
+        .navbar-links li a:hover {
+            color: #ffffff;
+        }
+
+        .navbar-links li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #e50914;
+            transition: width 0.3s ease;
+        }
+
+        .navbar-links li a:hover::after {
+            width: 100%;
+        }
+
+        .profile-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .profile-icon:hover {
+            border-color: #ffffff;
+            transform: scale(1.1);
+        }
+
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            margin-top: 8px;
+        }
+
+        .dropdown-content.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e5e5e5;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .dropdown-profiles {
+            padding: 0.5rem 0;
+        }
+
+        .dropdown-profile-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-profile-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-profile-item.active {
+            background-color: rgba(229, 9, 20, 0.2);
+        }
+
+        .dropdown-profile-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            margin-right: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dropdown-profile-name {
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-transform: capitalize;
+        }
+
+        .dropdown-profile-item.active .dropdown-profile-name {
+            font-weight: 600;
+        }
+
+        .dropdown-separator {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0.5rem 1rem;
+        }
+
+        .dropdown-action {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            color: #e5e5e5;
+            font-size: 0.9rem;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-action:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Profile Page */
+        .profile-page {
+            min-height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(0,0,0,0.3) 0%,
+                rgba(0,0,0,0.1) 40%,
+                rgba(0,0,0,0.7) 75%,
+                rgba(0,0,0,0.9) 100%
+            );
+            z-index: 1;
+        }
+
+        .profile-page::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(0,0,0,0.8) 0%,
+                rgba(0,0,0,0.4) 50%,
+                transparent 100%
+            );
+            z-index: 1;
+        }
+
+        /* Profile Banner */
+        .profile-banner {
+            position: relative;
+            z-index: 2;
+            padding: 150px 4% 80px;
+            max-width: 50%;
+            min-width: 400px;
+        }
+
+        .banner-headline {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .banner-description {
+            font-size: clamp(1rem, 2vw, 1.6rem);
+            line-height: 1.5;
+            margin-bottom: 2.5rem;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
+            color: #ffffff;
+            max-width: 90%;
+        }
+
+        .banner-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .play-button, .more-info-button {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-button {
+            background-color: #ffffff;
+            color: #000000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .play-button:hover {
+            background-color: rgba(255,255,255,0.9);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .more-info-button {
+            background-color: rgba(109,109,110,0.7);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .more-info-button:hover {
+            background-color: rgba(109,109,110,0.5);
+            border-color: rgba(255,255,255,0.7);
+            transform: scale(1.05);
+        }
+
+        .icon-container {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Top Picks Row */
+        .top-picks-row {
+            padding: 3rem 4% 2rem;
+            background-color: #000000;
+        }
+
+        .row-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #e5e5e5;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .card-row {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding-bottom: 1rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .card-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pick-card {
+            position: relative;
+            min-width: 300px;
+            height: 169px;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: netflixSlideIn 0.8s forwards;
+            background: #1a1a1a;
+        }
+
+        .pick-card:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        }
+
+        @keyframes netflixSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pick-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .pick-card:hover .pick-image {
+            transform: scale(1.1);
+        }
+
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent 0%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,0.95) 100%);
+            padding: 2rem 1.5rem 1.5rem;
+            color: #ffffff;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .pick-card:hover .overlay {
+            transform: translateY(0);
+        }
+
+        .pick-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        /* Content Pages */
+        .content-page {
+            padding: 120px 4% 80px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            min-height: 100vh;
+        }
+
+        .page-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            margin-bottom: 3rem;
+            color: #ffffff;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            border-left: 4px solid #e50914;
+            padding-left: 2rem;
+        }
+
+        .page-content {
+            color: #e5e5e5;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            max-width: 1200px;
+        }
+
+        /* Skills Grid */
+        .skills-container {
+            padding: 120px 4% 80px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            min-height: 100vh;
+        }
+
+        .skill-category {
+            margin-bottom: 4rem;
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #e50914;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .category-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #e50914, #ff6b6b);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .skill-card:hover {
+            transform: translateY(-8px);
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+        }
+
+        .skill-card .icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .skill-name {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .skill-description {
+            color: #b3b3b3;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Projects Grid */
+        .projects-container {
+            padding: 120px 4% 80px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            min-height: 100vh;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .project-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover .project-image {
+            transform: scale(1.05);
+        }
+
+        .project-details {
+            padding: 2rem;
+        }
+
+        .project-details h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .project-details p {
+            color: #b3b3b3;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .tech-used {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-badge {
+            background: linear-gradient(135deg, #e50914, #ff6b6b);
+            color: #ffffff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .who-is-watching {
+                font-size: 28px;
+                margin-bottom: 3rem;
+            }
+            
+            .profiles {
+                gap: 1.5rem;
+            }
+            
+            .profile-card {
+                width: 35vw;
+                height: 35vw;
+                max-width: 150px;
+                max-height: 150px;
+            }
+            
+            .profile-name {
+                font-size: 16px;
+            }
+            
+            .navbar {
+                padding: 10px 4%;
+            }
+            
+            .navbar-links {
+                display: none;
+            }
+            
+            .navbar-logo img {
+                height: 24px;
+                margin-right: 20px;
+            }
+            
+            .profile-icon {
+                width: 28px;
+                height: 28px;
+            }
+            
+            .banner-headline {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+            
+            .banner-description {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .profile-banner {
+                max-width: 95%;
+                min-width: auto;
+                padding: 120px 4% 60px;
+            }
+            
+            .top-picks-row, .content-page, .skills-container, .projects-container {
+                padding: 100px 4% 60px;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .pick-card {
+                min-width: 280px;
+                height: 158px;
+            }
+            
+            .card-row {
+                gap: 0.3rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+                padding-left: 1rem;
+            }
+            
+            .banner-buttons {
+                gap: 0.8rem;
+            }
+            
+            .play-button, .more-info-button {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @keyframes fade {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* Netflix-style loading animation */
+        @keyframes netflixPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .loading {
+            animation: netflixPulse 1.5s infinite;
+        }
+
+        /* Netflix-style loading spinner */
+        .netflix-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(229, 9, 20, 0.3);
+            border-top: 3px solid #e50914;
+            border-radius: 50%;
+            animation: netflixSpin 1s linear infinite;
+        }
+
+        @keyframes netflixSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Continue watching row style */
+        .continue-watching-row {
+            padding: 2rem 4% 3rem;
+            background-color: #000000;
+        }
+
+        .continue-watching-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #e5e5e5;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .continue-card {
+            position: relative;
+            min-width: 300px;
+            height: 169px;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #1a1a1a;
+            margin-right: 0.5rem;
+        }
+
+        .continue-card:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        }
+
+        .continue-card .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            padding: 16px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .continue-card:hover .overlay {
+            transform: translateY(0);
+        }
+
+        /* Netflix-style breadcrumb */
+        .netflix-breadcrumb {
+            padding: 100px 4% 20px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        }
+
+        .breadcrumb-text {
+            color: #999999;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-text a {
+            color: #e50914;
+            text-decoration: none;
+        }
+
+        .breadcrumb-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Enhanced profile hover effects - properly aligned with image */
+        .image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            opacity: 0;
+            transform: translateX(-100%);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            pointer-events: none;
+            border-radius: 5px;
+            z-index: 2;
+        }
+
+        .profile-card:hover .image-container::before {
+            opacity: 1;
+            transform: translateX(100%);
+            transition-delay: 0.15s;
+        }
+
+        /* Smooth hover zone to prevent flickering */
+        .profile-card::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* More Netflix-like card hover */
+        .enhanced-card-hover {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .enhanced-card-hover::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .enhanced-card-hover:hover::after {
+            transform: translateX(100%);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dropdown-content {
+                min-width: 180px;
+                right: -10px;
+            }
+            
+            .dropdown-profile-icon {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .dropdown-profile-name {
+                font-size: 0.85rem;
+            }
+            
+            .dropdown-header,
+            .dropdown-action {
+                font-size: 0.85rem;
+                padding: 0.6rem 0.8rem;
+            }
+            
+            .dropdown-profile-item {
+                padding: 0.6rem 0.8rem;
+            }
+        }
+
+        /* Profile dropdown arrow indicator */
+        .profile-dropdown::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -12px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid #ffffff;
+            border-top: 3px solid transparent;
+            border-bottom: 3px solid transparent;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-dropdown:hover::after {
+            opacity: 0.7;
+        }
+
+        .profile-dropdown.open::after {
+            transform: translateY(-50%) rotate(90deg);
+            opacity: 1;
+        }
+
+        .profile-dropdown.open .profile-icon {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Netflix Title Splash Screen -->
+    <div id="netflix-splash" class="netflix-container">
+        <img src="assets/images/Logo.png" alt="Netflix Logo" class="netflix-logo" />
+    </div>
+
+    <!-- Browse Page -->
+    <div id="browse-page" class="browse-container hidden">
+        <p class="who-is-watching">Who's Watching?</p>
+        <div class="profiles">
+            <div class="profile-card" onclick="selectProfile('recruiter')">
+                <div class="image-container">
+                    <img src="assets/images/bossbaby.png" alt="Recruiter profile" class="profile-image" />
+                </div>
+                <h3 class="profile-name">recruiter</h3>
+            </div>
+            
+            <div class="profile-card" onclick="selectProfile('developer')">
+                <div class="image-container">
+                    <img src="assets/images/prof.png" alt="Developer profile" class="profile-image" />
+                </div>
+                <h3 class="profile-name">developer</h3>
+            </div>
+            
+            <div class="profile-card" onclick="selectProfile('stalker')">
+                <div class="image-container">
+                    <img src="assets/images/horse.png" alt="Stalker profile" class="profile-image" />
+                </div>
+                <h3 class="profile-name">stalker</h3>
+            </div>
+            
+            <div class="profile-card" onclick="selectProfile('adventurer')">
+                <div class="image-container">
+                    <img src="assets/images/default-profile.png" alt="Adventurer profile" class="profile-image" />
+                </div>
+                <h3 class="profile-name">adventurer</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div id="main-layout" class="main-layout">
+        <!-- Navbar -->
+        <nav class="navbar" id="navbar">
+            <div class="navbar-left">
+                <div class="navbar-logo">
+                    <img src="assets/images/Logo.png" alt="Netflix" onclick="goToBrowse()" />
+                </div>
+                <ul class="navbar-links">
+                    <li><a onclick="goToProfileHome()">Home</a></li>
+                    <li><a onclick="showPage('work-experience')">Professional</a></li>
+                    <li><a onclick="showPage('skills')">Skills</a></li>
+                    <li><a onclick="showPage('projects')">Projects</a></li>
+                    <li><a onclick="showPage('contact-me')">Hire Me</a></li>
+                </ul>
+            </div>
+            <div class="navbar-right">
+                <div class="profile-dropdown">
+                    <img id="profile-icon" src="" alt="Profile" class="profile-icon" onclick="toggleProfileDropdown()" />
+                    <div id="profile-dropdown-content" class="dropdown-content">
+                        <div class="dropdown-header">Switch Profile</div>
+                        <div class="dropdown-profiles" id="dropdown-profiles">
+                            <!-- Profile items will be populated by JavaScript -->
+                        </div>
+                        <div class="dropdown-separator"></div>
+                        <button class="dropdown-action" onclick="goToBrowse(); hideProfileDropdown();">
+                            Manage Profiles
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Profile Page -->
+        <div id="profile-page" class="profile-page">
+            <div class="profile-banner">
+                <h1 class="banner-headline">Software Developer & Tech Enthusiast</h1>
+                <p class="banner-description">
+                    Passionate full-stack developer with 5+ years of experience in building scalable web applications. 
+                    Specialized in React, Node.js, and cloud technologies. Always eager to learn and tackle new challenges.
+                </p>
+                <div class="banner-buttons">
+                    <button class="play-button" onclick="openResume()">
+                        <div class="icon-container">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24" width="24" height="24">
+                                <path d="M5 2.69127C5 1.93067 5.81547 1.44851 6.48192 1.81506L23.4069 11.1238C24.0977 11.5037 24.0977 12.4963 23.4069 12.8762L6.48192 22.1849C5.81546 22.5515 5 22.0693 5 21.3087V2.69127Z" fill="black"/>
+                            </svg>
+                        </div>
+                        <span class="label">Resume</span>
+                    </button>
+                    <button class="more-info-button" onclick="openLinkedIn()">
+                        <div class="icon-container">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" width="24" height="24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-6h2v6zm-1-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm0-4c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="white"/>
+                            </svg>
+                        </div>
+                        <span class="label">LinkedIn</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Picks Row -->
+        <div id="top-picks-row" class="top-picks-row">
+            <h2 class="row-title">Today's Top Picks for you</h2>
+            <div class="card-row" id="top-picks-cards">
+                <!-- Cards will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Continue Watching Row -->
+        <div id="continue-watching-row" class="continue-watching-row">
+            <h2 class="continue-watching-title">Continue Learning</h2>
+            <div class="card-row" id="continue-watching-cards">
+                <!-- Cards will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Content Pages -->
+        <div id="skills-page" class="skills-container hidden">
+            <h1 class="page-title">Skills & Technologies</h1>
+            <div class="skill-category">
+                <h3 class="category-title">Frontend Development</h3>
+                <div class="skills-grid">
+                    <div class="skill-card">
+                        <div class="icon" style="color: #61DAFB;">⚛️</div>
+                        <h3 class="skill-name">React</h3>
+                        <p class="skill-description">Building interactive UIs with hooks, context, and modern React patterns</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="icon" style="color: #3178C6;">📜</div>
+                        <h3 class="skill-name">TypeScript</h3>
+                        <p class="skill-description">Type-safe JavaScript development with enhanced IDE support</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="icon" style="color: #1572B6;">🎨</div>
+                        <h3 class="skill-name">CSS3</h3>
+                        <p class="skill-description">Modern styling with Flexbox, Grid, and responsive design</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="icon" style="color: #06B6D4;">🌊</div>
+                        <h3 class="skill-name">Tailwind CSS</h3>
+                        <p class="skill-description">Utility-first CSS framework for rapid UI development</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="skill-category">
+                <h3 class="category-title">Backend Development</h3>
+                <div class="skills-grid">
+                    <div class="skill-card">
+                        <div class="icon" style="color: #339933;">🟢</div>
+                        <h3 class="skill-name">Node.js</h3>
+                        <p class="skill-description">Server-side JavaScript runtime for scalable applications</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="icon" style="color: #007396;">☕</div>
+                        <h3 class="skill-name">Java</h3>
+                        <p class="skill-description">Enterprise application development with Spring ecosystem</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="icon" style="color: #336791;">🐘</div>
+                        <h3 class="skill-name">PostgreSQL</h3>
+                        <p class="skill-description">Advanced relational database management and optimization</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="icon" style="color: #47A248;">🍃</div>
+                        <h3 class="skill-name">MongoDB</h3>
+                        <p class="skill-description">NoSQL database for flexible, document-oriented storage</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="skill-category">
+                <h3 class="category-title">Cloud & DevOps</h3>
+                <div class="skills-grid">
+                    <div class="skill-card">
+                        <div class="icon" style="color: #FF9900;">☁️</div>
+                        <h3 class="skill-name">AWS</h3>
+                        <p class="skill-description">Cloud infrastructure, Lambda, EC2, S3, and serverless architectures</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="icon" style="color: #2496ED;">🐳</div>
+                        <h3 class="skill-name">Docker</h3>
+                        <p class="skill-description">Containerization and microservices deployment</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="icon" style="color: #326CE5;">⚓</div>
+                        <h3 class="skill-name">Kubernetes</h3>
+                        <p class="skill-description">Container orchestration and cluster management</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="icon" style="color: #DA2E31;">🔧</div>
+                        <h3 class="skill-name">Jenkins</h3>
+                        <p class="skill-description">CI/CD pipelines and automated deployment workflows</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="projects-page" class="projects-container hidden">
+            <h1 class="page-title">Featured Projects</h1>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <img src="https://picsum.photos/400/200?random=1" alt="E-commerce Platform" class="project-image" />
+                    <div class="project-details">
+                        <h3>E-commerce Platform</h3>
+                        <p>Full-stack e-commerce solution with React frontend and Node.js backend</p>
+                        <div class="tech-used">
+                            <span class="tech-badge">React</span>
+                            <span class="tech-badge">Node.js</span>
+                            <span class="tech-badge">PostgreSQL</span>
+                            <span class="tech-badge">AWS</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img src="https://picsum.photos/400/200?random=2" alt="Task Management App" class="project-image" />
+                    <div class="project-details">
+                        <h3>Task Management App</h3>
+                        <p>Collaborative task management tool with real-time updates</p>
+                        <div class="tech-used">
+                            <span class="tech-badge">React</span>
+                            <span class="tech-badge">Socket.io</span>
+                            <span class="tech-badge">MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img src="https://picsum.photos/400/200?random=3" alt="Weather Dashboard" class="project-image" />
+                    <div class="project-details">
+                        <h3>Weather Dashboard</h3>
+                        <p>Real-time weather tracking with interactive maps and forecasts</p>
+                        <div class="tech-used">
+                            <span class="tech-badge">Vue.js</span>
+                            <span class="tech-badge">API Integration</span>
+                            <span class="tech-badge">Charts.js</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="work-experience-page" class="content-page hidden">
+            <h1 class="page-title">Work Experience</h1>
+            <div class="page-content">
+                <div style="margin-bottom: 4rem; padding: 2rem; background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); border-radius: 12px; border-left: 4px solid #e50914;">
+                    <h3 style="color: #ffffff; font-size: 1.8rem; margin-bottom: 0.5rem; font-weight: 600;">Senior Full Stack Developer</h3>
+                    <p style="color: #e50914; margin: 0.5rem 0; font-weight: 500; font-size: 1.1rem;">Tech Solutions Inc. | 2022 - Present</p>
+                    <ul style="margin-top: 1.5rem; padding-left: 2rem; color: #b3b3b3; line-height: 1.7;">
+                        <li style="margin-bottom: 0.8rem;">Led development of microservices architecture serving 100K+ users</li>
+                        <li style="margin-bottom: 0.8rem;">Implemented CI/CD pipelines reducing deployment time by 70%</li>
+                        <li style="margin-bottom: 0.8rem;">Mentored junior developers and conducted code reviews</li>
+                    </ul>
+                </div>
+                
+                <div style="margin-bottom: 4rem; padding: 2rem; background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); border-radius: 12px; border-left: 4px solid #e50914;">
+                    <h3 style="color: #ffffff; font-size: 1.8rem; margin-bottom: 0.5rem; font-weight: 600;">Full Stack Developer</h3>
+                    <p style="color: #e50914; margin: 0.5rem 0; font-weight: 500; font-size: 1.1rem;">Digital Innovations LLC | 2020 - 2022</p>
+                    <ul style="margin-top: 1.5rem; padding-left: 2rem; color: #b3b3b3; line-height: 1.7;">
+                        <li style="margin-bottom: 0.8rem;">Built responsive web applications using React and Node.js</li>
+                        <li style="margin-bottom: 0.8rem;">Optimized database queries improving application performance by 40%</li>
+                        <li style="margin-bottom: 0.8rem;">Collaborated with UX/UI designers to implement pixel-perfect interfaces</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="contact-me-page" class="content-page hidden">
+            <h1 class="page-title">Get In Touch</h1>
+            <div class="page-content">
+                <p style="font-size: 1.5rem; margin-bottom: 3rem; color: #e5e5e5; line-height: 1.6;">
+                    Ready to work together? Let's discuss your next project and bring your ideas to life!
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem;">
+                    <div style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); padding: 2.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                        <h3 style="color: #e50914; margin-bottom: 1rem; font-size: 1.3rem; font-weight: 600;">📧 Email</h3>
+                        <p style="color: #ffffff; font-size: 1.1rem;">john.developer@email.com</p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); padding: 2.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                        <h3 style="color: #e50914; margin-bottom: 1rem; font-size: 1.3rem; font-weight: 600;">📱 Phone</h3>
+                        <p style="color: #ffffff; font-size: 1.1rem;">+1 (555) 123-4567</p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); padding: 2.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                        <h3 style="color: #e50914; margin-bottom: 1rem; font-size: 1.3rem; font-weight: 600;">💼 LinkedIn</h3>
+                        <p style="color: #ffffff; font-size: 1.1rem;">linkedin.com/in/johndeveloper</p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); padding: 2.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                        <h3 style="color: #e50914; margin-bottom: 1rem; font-size: 1.3rem; font-weight: 600;">🐙 GitHub</h3>
+                        <p style="color: #ffffff; font-size: 1.1rem;">github.com/johndeveloper</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProfile = 'recruiter';
+        
+        // Top picks configuration for different profiles
+        const topPicksConfig = {
+            recruiter: [
+                { title: "Work Permit", imgSrc: "https://picsum.photos/seed/workpermit/250/200", page: "work-experience" },
+                { title: "Skills", imgSrc: "https://picsum.photos/seed/skills/250/200", page: "skills" },
+                { title: "Experience", imgSrc: "https://picsum.photos/seed/workexperience/250/200", page: "work-experience" },
+                { title: "Projects", imgSrc: "https://picsum.photos/seed/projects/250/200", page: "projects" },
+                { title: "Contact Me", imgSrc: "https://picsum.photos/seed/contact/250/200", page: "contact-me" }
+            ],
+            developer: [
+                { title: "Skills", imgSrc: "https://picsum.photos/seed/coding/250/200", page: "skills" },
+                { title: "Projects", imgSrc: "https://picsum.photos/seed/development/250/200", page: "projects" },
+                { title: "Experience", imgSrc: "https://picsum.photos/seed/work/250/200", page: "work-experience" },
+                { title: "Contact Me", imgSrc: "https://picsum.photos/seed/connect/250/200", page: "contact-me" }
+            ],
+            stalker: [
+                { title: "Contact Me", imgSrc: "https://picsum.photos/seed/call/250/200", page: "contact-me" },
+                { title: "Projects", imgSrc: "https://picsum.photos/seed/planning/250/200", page: "projects" },
+                { title: "Experience", imgSrc: "https://picsum.photos/seed/resume/250/200", page: "work-experience" },
+                { title: "Skills", imgSrc: "https://picsum.photos/seed/achievements/250/200", page: "skills" }
+            ],
+            adventurer: [
+                { title: "Projects", imgSrc: "https://picsum.photos/seed/innovation/250/200", page: "projects" },
+                { title: "Contact Me", imgSrc: "https://picsum.photos/seed/connect/250/200", page: "contact-me" },
+                { title: "Skills", imgSrc: "https://picsum.photos/seed/medal/250/200", page: "skills" },
+                { title: "Experience", imgSrc: "https://picsum.photos/seed/adventure/250/200", page: "work-experience" }
+            ]
+        };
+
+        // Continue watching configuration
+        const continueWatchingConfig = {
+            recruiter: [
+                { title: "Understanding Work Permits", imgSrc: "https://picsum.photos/seed/visa1/300/169", progress: 75, page: "work-experience" },
+                { title: "Professional Skills Development", imgSrc: "https://picsum.photos/seed/skills1/300/169", progress: 40, page: "skills" },
+                { title: "Building Your Portfolio", imgSrc: "https://picsum.photos/seed/portfolio1/300/169", progress: 90, page: "projects" }
+            ],
+            developer: [
+                { title: "Advanced React Patterns", imgSrc: "https://picsum.photos/seed/react1/300/169", progress: 60, page: "skills" },
+                { title: "Microservices Architecture", imgSrc: "https://picsum.photos/seed/micro1/300/169", progress: 30, page: "projects" },
+                { title: "Cloud Deployment Strategies", imgSrc: "https://picsum.photos/seed/cloud1/300/169", progress: 85, page: "work-experience" }
+            ],
+            stalker: [
+                { title: "Network Analysis", imgSrc: "https://picsum.photos/seed/network1/300/169", progress: 45, page: "skills" },
+                { title: "Data Mining Projects", imgSrc: "https://picsum.photos/seed/data1/300/169", progress: 70, page: "projects" },
+                { title: "Security Protocols", imgSrc: "https://picsum.photos/seed/security1/300/169", progress: 20, page: "work-experience" }
+            ],
+            adventurer: [
+                { title: "Creative Coding", imgSrc: "https://picsum.photos/seed/creative1/300/169", progress: 55, page: "projects" },
+                { title: "Innovation Labs", imgSrc: "https://picsum.photos/seed/innovation1/300/169", progress: 80, page: "work-experience" },
+                { title: "Emerging Technologies", imgSrc: "https://picsum.photos/seed/emerging1/300/169", progress: 25, page: "skills" }
+            ]
+        };
+
+        // Profile images
+        const profileImages = {
+            recruiter: "assets/images/bossbaby.png",
+            developer: "assets/images/prof.png",
+            stalker: "assets/images/horse.png",
+            adventurer: "assets/images/default-profile.png"
+        };
+
+        // Background GIFs for different profiles
+        const backgroundGifs = {
+            recruiter: "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTZ5eWwwbjRpdWM1amxyd3VueHhteTVzajVjeGZtZGJ1dDc4MXMyNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9dg/16u7Ifl2T4zYfQ932F/giphy.gif",
+            developer: "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGNidDl5emZpejY2eGFxa2I4NW0zZGNpbWRlbnBrZ3N2dWhhbzM1MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TFPdmm3rdzeZ0kP3zG/giphy.gif",
+            stalker: "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExc28yMjMyZmJ6eWtxbmNwdDV6cXk4dWZmcjFhZms2cXBjN2h5ZDJjeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QjZXUBUr89CkiWLPjL/giphy.gif",
+            adventurer: "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmxib24ycWo2cjlmazh0NGV5NTZ2Mzd2YWY0M2tvam9oYXBwYW1ocCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ERKMnDK6tkzJe8YVa3/giphy-downsized-large.gif"
+        };
+
+        // Global flag to track if user has interacted with the page
+        let userHasInteracted = false;
+        let audioContextUnlocked = false;
+        let soundAttempted = false;
+
+        // Create invisible interaction button to bypass autoplay restrictions
+        function createInvisibleInteractionButton() {
+            // Create an invisible button that covers the entire splash screen
+            const invisibleButton = document.createElement('button');
+            invisibleButton.id = 'invisible-interaction-btn';
+            invisibleButton.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                z-index: 9999;
+                opacity: 0;
+                pointer-events: auto;
+            `;
+            invisibleButton.setAttribute('aria-label', 'Start Netflix Portfolio');
+            
+            // When clicked, unlock audio and play Netflix sound
+            invisibleButton.addEventListener('click', function() {
+                console.log('🎯 Invisible button clicked - forcing audio unlock');
+                userHasInteracted = true;
+                
+                // Immediately unlock audio and play Netflix sound
+                unlockAudioContext().then(() => {
+                    playNetflixSoundAggressively();
+                });
+                
+                // Remove the button after first interaction
+                invisibleButton.remove();
+            });
+            
+            // Also listen for any key press
+            invisibleButton.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    invisibleButton.click();
+                }
+            });
+            
+            // Auto-focus the button when splash screen is shown
+            setTimeout(() => {
+                if (document.body.contains(invisibleButton)) {
+                    invisibleButton.focus();
+                    // Auto-click after a small delay to simulate user interaction
+                    setTimeout(() => {
+                        if (document.body.contains(invisibleButton)) {
+                            console.log('🔥 Auto-clicking invisible button');
+                            invisibleButton.click();
+                        }
+                    }, 100);
+                }
+            }, 200);
+            
+            document.body.appendChild(invisibleButton);
+            console.log('📱 Invisible interaction button created');
+        }
+
+        // Enhanced audio context unlock function
+        async function unlockAudioContext() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                    console.log('✅ Audio context resumed successfully');
+                }
+                
+                audioContextUnlocked = true;
+                
+                // Create a brief silent sound to fully unlock
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.01);
+                
+                audioContext.close();
+                return true;
+            } catch (error) {
+                console.log('Audio context unlock failed:', error);
+                return false;
+            }
+        }
+
+        // Initialize the application
+        function init() {
+            // Set initial history state
+            replaceHistory({ page: 'splash' }, 'Netflix Portfolio', '#/');
+            
+            // Create invisible interaction button
+            createInvisibleInteractionButton();
+            
+            // Force enable autoplay capabilities immediately
+            forceEnableAutoplay();
+            
+            // Create hidden audio element for better control
+            createHiddenAudioElement();
+            
+            // Set up user interaction listeners
+            setupUserInteractionListeners();
+            
+            // Start the Netflix splash sequence
+            startNetflixSplash();
+
+            // Scroll effect for navbar
+            window.addEventListener('scroll', function() {
+                const navbar = document.getElementById('navbar');
+                if (window.scrollY > 80) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        }
+
+        // Force enable autoplay by attempting to unlock audio immediately
+        function forceEnableAutoplay() {
+            // Try to create and unlock audio context immediately
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                audioContext.close();
+                console.log('Audio context forcefully unlocked');
+            } catch (e) {
+                console.log('Audio context unlock attempt failed:', e);
+            }
+
+            // Try to create silent audio to unlock autoplay
+            try {
+                const silentAudio = new Audio();
+                silentAudio.volume = 0;
+                silentAudio.muted = true;
+                const silentPromise = silentAudio.play();
+                if (silentPromise) {
+                    silentPromise.then(() => {
+                        silentAudio.pause();
+                        console.log('Silent audio unlock successful');
+                        userHasInteracted = true;
+                        audioContextUnlocked = true;
+                    }).catch(() => {
+                        console.log('Silent audio unlock failed');
+                    });
+                }
+            } catch (e) {
+                console.log('Silent audio creation failed:', e);
+            }
+        }
+
+        // Create a hidden audio element for better control
+        function createHiddenAudioElement() {
+            if (!document.getElementById('netflix-audio')) {
+                const audio = document.createElement('audio');
+                audio.id = 'netflix-audio';
+                audio.preload = 'auto';
+                audio.volume = 0.6;
+                audio.style.display = 'none';
+                audio.src = 'assets/audio/netflix-intro.mp3';
+                audio.autoplay = true; // Force autoplay
+                audio.muted = false;
+                document.body.appendChild(audio);
+                
+                // Try to load and play the audio immediately
+                audio.load();
+                audio.play().catch(() => {
+                    console.log('Hidden audio autoplay blocked');
+                });
+                
+                console.log('Hidden audio element created with autoplay');
+            }
+        }
+
+        // Set up listeners for first user interaction to unlock audio
+        function setupUserInteractionListeners() {
+            const unlockAudio = () => {
+                if (!userHasInteracted) {
+                    userHasInteracted = true;
+                    console.log('User interaction detected - unlocking audio');
+                    
+                    // Try to unlock audio context
+                    try {
+                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        if (audioContext.state === 'suspended') {
+                            audioContext.resume().then(() => {
+                                audioContextUnlocked = true;
+                                audioContext.close();
+                                console.log('Audio context unlocked');
+                                // Immediately try to play Netflix sound if on splash
+                                if (document.getElementById('netflix-splash').style.display !== 'none' && 
+                                    !document.getElementById('netflix-splash').classList.contains('hidden')) {
+                                    setTimeout(() => playNetflixSound(), 50);
+                                }
+                            });
+                        } else {
+                            audioContextUnlocked = true;
+                            console.log('Audio context already unlocked');
+                            // Immediately try to play Netflix sound if on splash
+                            if (document.getElementById('netflix-splash').style.display !== 'none' && 
+                                !document.getElementById('netflix-splash').classList.contains('hidden')) {
+                                setTimeout(() => playNetflixSound(), 50);
+                            }
+                        }
+                    } catch (e) {
+                        console.log('Audio context unlock failed:', e);
+                    }
+
+                    // Try to preload and unlock HTML5 audio aggressively
+                    try {
+                        const audio = new Audio('assets/audio/netflix-intro.mp3');
+                        audio.volume = 0.01;
+                        audio.muted = true;
+                        const playPromise = audio.play();
+                        if (playPromise) {
+                            playPromise.then(() => {
+                                audio.pause();
+                                audio.currentTime = 0;
+                                audio.muted = false;
+                                console.log('HTML5 audio unlocked');
+                                // Try to play the actual Netflix sound immediately
+                                if (document.getElementById('netflix-splash').style.display !== 'none' && 
+                                    !document.getElementById('netflix-splash').classList.contains('hidden')) {
+                                    setTimeout(() => {
+                                        audio.volume = 0.6;
+                                        audio.currentTime = 0;
+                                        audio.play().catch(() => {
+                                            console.log('Immediate replay failed, using synthetic');
+                                            playNetflixSoundSynthetic();
+                                        });
+                                    }, 50);
+                                }
+                            }).catch(() => {
+                                console.log('HTML5 unlock failed');
+                            });
+                        }
+                    } catch (e) {
+                        console.log('HTML5 audio unlock failed:', e);
+                    }
+
+                    // Remove listeners after first interaction
+                    document.removeEventListener('click', unlockAudio);
+                    document.removeEventListener('keydown', unlockAudio);
+                    document.removeEventListener('touchstart', unlockAudio);
+                    document.removeEventListener('scroll', unlockAudio);
+                    document.removeEventListener('mousemove', unlockAudio);
+                    document.removeEventListener('mousedown', unlockAudio);
+                }
+            };
+
+            // Listen for various user interactions (including more aggressive detection)
+            document.addEventListener('click', unlockAudio);
+            document.addEventListener('keydown', unlockAudio);
+            document.addEventListener('touchstart', unlockAudio);
+            document.addEventListener('scroll', unlockAudio);
+            document.addEventListener('mousemove', unlockAudio);
+            document.addEventListener('mousedown', unlockAudio);
+            
+            // Also try to detect user interaction via focus/blur events
+            window.addEventListener('focus', unlockAudio);
+            window.addEventListener('blur', () => {
+                // When user returns to tab, try to play sound if on splash
+                setTimeout(() => {
+                    if (document.getElementById('netflix-splash').style.display !== 'none' && 
+                        !document.getElementById('netflix-splash').classList.contains('hidden') &&
+                        userHasInteracted) {
+                        playNetflixSound();
+                    }
+                }, 200);
+            });
+        }
+
+        // Separate function to handle Netflix splash sequence with invisible button integration
+        function startNetflixSplash() {
+            // Show splash screen
+            document.getElementById('netflix-splash').style.display = 'flex';
+            document.getElementById('browse-page').classList.add('hidden');
+            document.getElementById('main-layout').classList.remove('active');
+            
+            // Reset logo animation classes
+            const logo = document.querySelector('.netflix-logo');
+            logo.classList.remove('animate');
+            
+            // Force a reflow to ensure the class removal takes effect
+            logo.offsetHeight;
+            
+            // Create invisible button if it doesn't exist
+            if (!document.getElementById('invisible-interaction-btn')) {
+                createInvisibleInteractionButton();
+            }
+            
+            // ALWAYS play Netflix intro sound immediately - multiple attempts
+            playNetflixSoundAggressively();
+            
+            // Start the Netflix splash sequence
+            setTimeout(() => {
+                logo.classList.add('animate');
+                
+                // Try to play sound again when animation starts
+                setTimeout(() => {
+                    playNetflixSoundAggressively();
+                }, 200);
+                
+                // Show splash for 3.5 seconds, then transition to main content
+                setTimeout(() => {
+                    showBrowsePage();
+                }, 3500);
+            }, 500);
+        }
+
+        // Ultra-aggressive Netflix sound playback with invisible button fallback
+        function playNetflixSoundAggressively() {
+            console.log('🎵 FORCING Netflix sound to play...');
+            
+            // Method 1: Check if we have user interaction via invisible button
+            if (userHasInteracted && audioContextUnlocked) {
+                console.log('✅ User interacted - playing audio immediately');
+                playNetflixSoundSynthetic();
+                tryPlayAudioFile();
+                return;
+            }
+            
+            // Method 2: Synthetic sound (always works, even without interaction)
+            playNetflixSoundSynthetic();
+            
+            // Method 3: Multiple audio file attempts (might be blocked)
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    tryPlayAudioFile();
+                }, i * 100);
+            }
+            
+            // Method 4: Hidden audio element
+            setTimeout(() => {
+                const hiddenAudio = document.getElementById('netflix-audio');
+                if (hiddenAudio) {
+                    hiddenAudio.muted = false;
+                    hiddenAudio.volume = 0.7;
+                    hiddenAudio.currentTime = 0;
+                    hiddenAudio.play().catch(() => {
+                        console.log('Hidden audio blocked but synthetic should be playing');
+                    });
+                }
+            }, 50);
+            
+            // Method 5: Trigger invisible button if it exists and hasn't been used
+            setTimeout(() => {
+                const invisibleBtn = document.getElementById('invisible-interaction-btn');
+                if (invisibleBtn && !userHasInteracted) {
+                    console.log('🎯 Triggering invisible button automatically');
+                    invisibleBtn.click();
+                }
+            }, 300);
+        }
+
+        function tryPlayAudioFile() {
+            try {
+                const audio = new Audio('assets/audio/netflix-intro.mp3');
+                audio.volume = 0.6;
+                audio.autoplay = true;
+                audio.muted = false;
+                
+                // Force immediate playback
+                const promise = audio.play();
+                if (promise) {
+                    promise.then(() => {
+                        console.log('✅ Audio file playing!');
+                    }).catch(() => {
+                        console.log('❌ Audio file blocked (synthetic playing instead)');
+                    });
+                }
+            } catch (e) {
+                console.log('Audio file error:', e);
+            }
+        }
+
+        function playNetflixSound() {
+            console.log('🎵 Playing Netflix sound...');
+            
+            // Immediately play synthetic sound (always works)
+            playNetflixSoundSynthetic();
+            
+            // Try audio file methods
+            let soundPlayed = false;
+            
+            // Method 1: Try the hidden audio element
+            const hiddenAudio = document.getElementById('netflix-audio');
+            if (hiddenAudio && !soundPlayed) {
+                try {
+                    hiddenAudio.currentTime = 0;
+                    hiddenAudio.volume = 0.6;
+                    hiddenAudio.muted = false;
+                    
+                    const playPromise = hiddenAudio.play();
+                    if (playPromise) {
+                        playPromise.then(() => {
+                            soundPlayed = true;
+                            console.log('✅ Netflix sound playing via hidden audio!');
+                        }).catch(error => {
+                            console.log('❌ Hidden audio failed:', error.message);
+                        });
+                    }
+                } catch (e) {
+                    console.log('❌ Hidden audio exception:', e);
+                }
+            }
+            
+            // Method 2: Try creating a new Audio instance
+            setTimeout(() => {
+                try {
+                    const newAudio = new Audio('assets/audio/netflix-intro.mp3');
+                    newAudio.volume = 0.6;
+                    newAudio.currentTime = 0;
+                    
+                    const playPromise2 = newAudio.play();
+                    if (playPromise2) {
+                        playPromise2.then(() => {
+                            console.log('✅ Netflix sound playing via new Audio instance!');
+                        }).catch(error => {
+                            console.log('❌ New Audio failed:', error.message);
+                        });
+                    }
+                } catch (e) {
+                    console.log('❌ New Audio exception:', e);
+                }
+            }, 100);
+        }
+        
+        function playNetflixSoundSynthetic() {
+            try {
+                // Create audio context fresh each time to avoid state issues
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Resume context if it's suspended (required in some browsers)
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume().then(() => {
+                        createNetflixTones(audioContext);
+                    }).catch(() => {
+                        // If resume fails, try anyway
+                        createNetflixTones(audioContext);
+                    });
+                } else {
+                    createNetflixTones(audioContext);
+                }
+                
+            } catch (e) {
+                console.log('Web Audio API not supported:', e);
+                // Try a simple fallback sound
+                trySimpleFallbackSound();
+            }
+        }
+        
+        function createNetflixTones(audioContext) {
+            try {
+                // Create the iconic Netflix "ta-dum" sound
+                const createTone = (frequency, startTime, duration, volume = 0.3) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    const filter = audioContext.createBiquadFilter();
+                    
+                    oscillator.connect(filter);
+                    filter.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(frequency, startTime);
+                    filter.frequency.setValueAtTime(frequency * 2, startTime);
+                    filter.Q.setValueAtTime(1, startTime);
+                    filter.type = 'lowpass';
+                    
+                    gainNode.gain.setValueAtTime(0, startTime);
+                    gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                    
+                    oscillator.start(startTime);
+                    oscillator.stop(startTime + duration);
+                    
+                    return { oscillator, gainNode };
+                };
+                
+                const now = audioContext.currentTime;
+                
+                // First "ta" - higher pitched, shorter
+                createTone(880, now + 0.1, 0.15, 0.4);
+                
+                // Second "dum" - lower pitched, longer, with harmonics
+                createTone(220, now + 0.3, 1.2, 0.5);
+                createTone(440, now + 0.3, 1.0, 0.2);
+                createTone(660, now + 0.3, 0.8, 0.1);
+                
+                // Add a subtle echo effect
+                createTone(220, now + 0.7, 0.6, 0.15);
+                
+                // Clean up audio context after sound finishes
+                setTimeout(() => {
+                    if (audioContext.state !== 'closed') {
+                        audioContext.close();
+                    }
+                }, 3000);
+                
+            } catch (e) {
+                console.log('Error creating Netflix tones:', e);
+                trySimpleFallbackSound();
+            }
+        }
+        
+        function trySimpleFallbackSound() {
+            try {
+                const simpleContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = simpleContext.createOscillator();
+                const gainNode = simpleContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(simpleContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, simpleContext.currentTime);
+                gainNode.gain.setValueAtTime(0.2, simpleContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, simpleContext.currentTime + 0.8);
+                
+                oscillator.start();
+                oscillator.stop(simpleContext.currentTime + 0.8);
+                
+                setTimeout(() => {
+                    if (simpleContext.state !== 'closed') {
+                        simpleContext.close();
+                    }
+                }, 1500);
+            } catch (fallbackError) {
+                console.log('All audio methods failed:', fallbackError);
+            }
+        }
+
+        // Netflix-style dropdown sound effects
+        function playDropdownSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function playClickSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(0.03, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function showBrowsePage() {
+            document.getElementById('netflix-splash').classList.add('hidden');
+            document.getElementById('browse-page').classList.remove('hidden');
+            
+            // Update browser history
+            pushHistory({ page: 'browse' }, 'Netflix Portfolio - Who\'s Watching?', '#/browse');
+        }
+
+        function selectProfile(profileName) {
+            currentProfile = profileName;
+            
+            // Show loading spinner
+            showLoadingSpinner();
+            
+            setTimeout(() => {
+                // Update profile icon in navbar
+                document.getElementById('profile-icon').src = profileImages[profileName];
+                
+                // Update background
+                document.getElementById('profile-page').style.backgroundImage = `url(${backgroundGifs[profileName]})`;
+                
+                // Update top picks row title
+                document.querySelector('.row-title').textContent = `Today's Top Picks for ${profileName}`;
+                
+                // Generate top picks cards
+                generateTopPicksCards(profileName);
+                
+                // Generate continue watching cards
+                generateContinueWatchingCards(profileName);
+                
+                // Show main layout
+                document.getElementById('browse-page').classList.add('hidden');
+                document.getElementById('main-layout').classList.add('active');
+                
+                // Show profile page by default
+                hideAllPages();
+                document.getElementById('profile-page').classList.remove('hidden');
+                document.getElementById('top-picks-row').classList.remove('hidden');
+                document.getElementById('continue-watching-row').classList.remove('hidden');
+                
+                // Update browser history
+                pushHistory({ page: 'home', profile: profileName }, `Netflix Portfolio - ${profileName}`, `#/${profileName}`);
+                
+                // Hide loading spinner
+                hideLoadingSpinner();
+            }, 1500);
+        }
+
+        function generateTopPicksCards(profileName) {
+            const cardsContainer = document.getElementById('top-picks-cards');
+            const picks = topPicksConfig[profileName];
+            
+            cardsContainer.innerHTML = '';
+            
+            picks.forEach((pick, index) => {
+                const card = document.createElement('div');
+                card.className = 'pick-card';
+                card.style.animationDelay = `${index * 0.2}s`;
+                card.onclick = () => showPage(pick.page);
+                
+                card.innerHTML = `
+                    <img src="${pick.imgSrc}" alt="${pick.title}" class="pick-image" />
+                    <div class="overlay">
+                        <div class="pick-label">${pick.title}</div>
+                    </div>
+                `;
+                
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        function generateContinueWatchingCards(profileName) {
+            const cardsContainer = document.getElementById('continue-watching-cards');
+            const continueItems = continueWatchingConfig[profileName];
+            
+            cardsContainer.innerHTML = '';
+            
+            continueItems.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'continue-card enhanced-card-hover';
+                card.style.animationDelay = `${(index + 5) * 0.2}s`;
+                card.onclick = () => showPage(item.page);
+                
+                card.innerHTML = `
+                    <img src="${item.imgSrc}" alt="${item.title}" class="pick-image" />
+                    <div class="overlay">
+                        <div class="pick-label">${item.title}</div>
+                        <div style="font-size: 0.8rem; color: #999; margin: 4px 0;">${item.progress}% watched</div>
+                        <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; margin-top: 8px;">
+                            <div style="width: ${item.progress}%; height: 100%; background: #e50914; border-radius: 2px; transition: width 0.3s ease;"></div>
+                        </div>
+                    </div>
+                `;
+                
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        function showLoadingSpinner() {
+            const spinner = document.createElement('div');
+            spinner.id = 'loading-spinner';
+            spinner.className = 'netflix-spinner';
+            spinner.innerHTML = '<div class="spinner"></div>';
+            document.body.appendChild(spinner);
+        }
+
+        function hideLoadingSpinner() {
+            const spinner = document.getElementById('loading-spinner');
+            if (spinner) {
+                spinner.remove();
+            }
+        }
+
+        // Profile dropdown functionality
+        function toggleProfileDropdown() {
+            const dropdown = document.getElementById('profile-dropdown-content');
+            const isVisible = dropdown.classList.contains('show');
+            
+            if (isVisible) {
+                hideProfileDropdown();
+            } else {
+                showProfileDropdown();
+            }
+        }
+
+        function showProfileDropdown() {
+            const dropdown = document.getElementById('profile-dropdown-content');
+            const container = document.querySelector('.profile-dropdown');
+            populateProfileDropdown();
+            dropdown.classList.add('show');
+            container.classList.add('open');
+            
+            // Close dropdown when clicking outside
+            setTimeout(() => {
+                document.addEventListener('click', closeDropdownOnClickOutside);
+            }, 100);
+        }
+
+        function hideProfileDropdown() {
+            const dropdown = document.getElementById('profile-dropdown-content');
+            const container = document.querySelector('.profile-dropdown');
+            dropdown.classList.remove('show');
+            container.classList.remove('open');
+            document.removeEventListener('click', closeDropdownOnClickOutside);
+        }
+
+        function closeDropdownOnClickOutside(event) {
+            const dropdown = document.querySelector('.profile-dropdown');
+            if (!dropdown.contains(event.target)) {
+                hideProfileDropdown();
+            }
+        }
+
+        function populateProfileDropdown() {
+            const container = document.getElementById('dropdown-profiles');
+            container.innerHTML = '';
+            
+            const profiles = ['recruiter', 'developer', 'stalker', 'adventurer'];
+            
+            profiles.forEach(profile => {
+                const profileItem = document.createElement('button');
+                profileItem.className = `dropdown-profile-item ${profile === currentProfile ? 'active' : ''}`;
+                profileItem.onclick = () => switchToProfile(profile);
+                
+                // Get the actual profile image source
+                let profileImageSrc = profileImages[profile];
+                
+                // If the profile is currently active and has a real image, use that
+                if (profile === currentProfile) {
+                    const currentIcon = document.getElementById('profile-icon');
+                    if (currentIcon.src && !currentIcon.src.includes('data:image/svg+xml')) {
+                        profileImageSrc = currentIcon.src;
+                    }
+                }
+                
+                profileItem.innerHTML = `
+                    <img src="${profileImageSrc}" alt="${profile}" class="dropdown-profile-icon" />
+                    <span class="dropdown-profile-name">${profile}</span>
+                `;
+                
+                // Add hover sound effect - REMOVED
+                // profileItem.addEventListener('mouseenter', () => {
+                //     if (profile !== currentProfile) {
+                //         playDropdownSound();
+                //     }
+                // });
+                
+                container.appendChild(profileItem);
+            });
+        }
+
+        function switchToProfile(profileName) {
+            if (profileName !== currentProfile) {
+                hideProfileDropdown();
+                
+                // Add a subtle fade effect during profile switch
+                const mainLayout = document.getElementById('main-layout');
+                mainLayout.style.transition = 'opacity 0.3s ease';
+                mainLayout.style.opacity = '0.7';
+                
+                setTimeout(() => {
+                    selectProfile(profileName);
+                    mainLayout.style.opacity = '1';
+                }, 300);
+            } else {
+                hideProfileDropdown();
+            }
+        }
+
+        // Enhanced page transitions
+        function showPage(pageName) {
+            showLoadingSpinner();
+            
+            setTimeout(() => {
+                hideAllPages();
+                document.getElementById(pageName + '-page').classList.remove('hidden');
+                
+                // Update browser history
+                const pageTitle = getPageTitle(pageName);
+                pushHistory({ page: pageName, profile: currentProfile }, pageTitle, `#/${currentProfile}/${pageName}`);
+                
+                hideLoadingSpinner();
+            }, 800);
+        }
+
+        function getPageTitle(pageName) {
+            const titles = {
+                'skills': 'Skills & Technologies',
+                'projects': 'Featured Projects', 
+                'work-experience': 'Work Experience',
+                'contact-me': 'Get In Touch'
+            };
+            return `Netflix Portfolio - ${titles[pageName] || pageName}`;
+        }
+
+        function hideAllPages() {
+            const pages = [
+                'profile-page', 'top-picks-row', 'continue-watching-row', 'skills-page', 
+                'projects-page', 'work-experience-page', 'contact-me-page'
+            ];
+            
+            pages.forEach(pageId => {
+                document.getElementById(pageId).classList.add('hidden');
+            });
+        }
+
+        function goToBrowse() {
+            hideProfileDropdown();
+            navigateToBrowse();
+            
+            // Update browser history
+            pushHistory({ page: 'browse' }, 'Netflix Portfolio - Who\'s Watching?', '#/browse');
+        }
+
+        function goToSplash() {
+            hideProfileDropdown();
+            navigateToSplash();
+            
+            // Update browser history
+            pushHistory({ page: 'splash' }, 'Netflix Portfolio', '#/');
+        }
+
+        function goToProfileHome() {
+            hideProfileDropdown();
+            
+            // Navigate to current profile's home page
+            hideAllPages();
+            document.getElementById('profile-page').classList.remove('hidden');
+            document.getElementById('top-picks-row').classList.remove('hidden');
+            document.getElementById('continue-watching-row').classList.remove('hidden');
+            
+            // Update browser history
+            pushHistory({ page: 'home', profile: currentProfile }, `Netflix Portfolio - ${currentProfile}`, `#/${currentProfile}`);
+        }
+
+        // Keyboard accessibility for dropdown
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const dropdown = document.getElementById('profile-dropdown-content');
+                if (dropdown.classList.contains('show')) {
+                    hideProfileDropdown();
+                }
+            }
+        });
+
+        // Browser history management
+        function pushHistory(state, title, url) {
+            if (window.history && window.history.pushState) {
+                window.history.pushState(state, title, url);
+            }
+        }
+
+        function replaceHistory(state, title, url) {
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState(state, title, url);
+            }
+        }
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function(event) {
+            // Prevent infinite loops by temporarily disabling history updates
+            const isNavigatingHistory = true;
+            
+            if (event.state) {
+                const { page, profile } = event.state;
+                console.log('Navigating to:', { page, profile }); // Debug log
+                
+                if (page === 'splash') {
+                    // Go to splash screen
+                    navigateToSplash();
+                } else if (page === 'browse') {
+                    // Go to profile selection
+                    navigateToBrowse();
+                } else if (page === 'home') {
+                    // Go to main profile page
+                    navigateToHome(profile);
+                } else {
+                    // Go to specific page
+                    navigateToPage(page, profile);
+                }
+            } else {
+                // No state, go to initial page
+                navigateToSplash();
+            }
+        });
+
+        // Navigation helper functions (without history updates)
+        function navigateToSplash() {
+            document.getElementById('main-layout').classList.remove('active');
+            document.getElementById('browse-page').classList.add('hidden');
+            document.getElementById('netflix-splash').classList.remove('hidden');
+            hideAllPages();
+            
+            // Reset user interaction flag for fresh splash experience
+            userHasInteracted = false;
+            audioContextUnlocked = false;
+            
+            // Start the Netflix splash sequence with sound every time
+            startNetflixSplash();
+        }
+
+        function navigateToBrowse() {
+            document.getElementById('netflix-splash').classList.add('hidden');
+            document.getElementById('main-layout').classList.remove('active');
+            document.getElementById('browse-page').classList.remove('hidden');
+            hideAllPages();
+        }
+
+        function navigateToHome(profile) {
+            if (profile && profile !== currentProfile) {
+                // Switch profile without adding to history
+                currentProfile = profile;
+                document.getElementById('profile-icon').src = profileImages[profile];
+                document.getElementById('profile-page').style.backgroundImage = `url(${backgroundGifs[profile]})`;
+                document.querySelector('.row-title').textContent = `Today's Top Picks for ${profile}`;
+                generateTopPicksCards(profile);
+                generateContinueWatchingCards(profile);
+            }
+            
+            // Show main layout and home page
+            document.getElementById('netflix-splash').classList.add('hidden');
+            document.getElementById('browse-page').classList.add('hidden');
+            document.getElementById('main-layout').classList.add('active');
+            hideAllPages();
+            document.getElementById('profile-page').classList.remove('hidden');
+            document.getElementById('top-picks-row').classList.remove('hidden');
+            document.getElementById('continue-watching-row').classList.remove('hidden');
+        }
+
+        function navigateToPage(pageName, profile) {
+            if (profile && profile !== currentProfile) {
+                // Switch profile without adding to history
+                currentProfile = profile;
+                document.getElementById('profile-icon').src = profileImages[profile];
+                document.getElementById('profile-page').style.backgroundImage = `url(${backgroundGifs[profile]})`;
+                document.querySelector('.row-title').textContent = `Today's Top Picks for ${profile}`;
+                generateTopPicksCards(profile);
+                generateContinueWatchingCards(profile);
+            }
+            
+            // Show main layout and specific page
+            document.getElementById('netflix-splash').classList.add('hidden');
+            document.getElementById('browse-page').classList.add('hidden');
+            document.getElementById('main-layout').classList.add('active');
+            hideAllPages();
+            document.getElementById(pageName + '-page').classList.remove('hidden');
+        }
+
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
