@@ -33,10 +33,9 @@ open index.html
 ```
 netflix_portfolio-main/
 ├── index.html              # Main application file (standalone)
-├── assets/                 # Static assets (future use)
-│   ├── images/            # Image files
-│   ├── css/               # Additional stylesheets (if needed)
-│   └── js/                # Additional scripts (if needed)
+├── assets/                 # Static assets
+│   ├── audio/             # Audio files
+│   └── images/            # Image files
 ├── docs/                  # Documentation
 ├── README.md              # This file
 ├── README_STANDALONE.md   # Detailed standalone documentation
